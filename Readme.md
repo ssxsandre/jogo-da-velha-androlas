@@ -1,0 +1,1 @@
+Um site com um jogo da velha, feito com JavaScript, HTML e CSS que, antes de poder jogar, é necessário colocar o nome dos dois jogadores, e, após a vitória de um dos jogadores ou empate, aparece um alerta na tela que diz quem ganhou, ou se o jogo ficou empatado.
