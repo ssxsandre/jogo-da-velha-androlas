@@ -54,3 +54,138 @@
 <body>
 
 <div id="players">
+    <label for="player1">Jogador 1:</label>
+    <input type="text" id="player1" placeholder="Nome do Jogador 1" onkeydown="checkEnter(event)">
+
+    <label for="player2">Jogador 2:</label>
+    <input type="text" id="player2" placeholder="Nome do Jogador 2" onkeydown="checkEnter(event)">
+
+    <button onclick="startGame()">Iniciar Jogo</button>
+</div>
+
+<div id="board"></div>
+
+    <div id="result"></div>
+
+<div id="buttons">
+    <button onclick="returnToLogin()">Voltar para o Login</button>
+    <button onclick="restartGame()">Reiniciar Jogo</button>
+</div>
+
+<script>
+    let currentPlayer = 1;
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let players = ['', ''];
+
+    function startGame() {
+        const player1 = document.getElementById('player1').value;
+        const player2 = document.getElementById('player2').value;
+
+        if (player1.trim() === '' || player2.trim() === '') {
+            alert('Por favor, insira o nome de ambos os jogadores.');
+            return;
+        }
+
+        players = [player1, player2];
+
+        document.getElementById('players').style.display = 'none';
+        document.getElementById('buttons').style.display = 'none';
+        createBoard();
+    }
+
+    function createBoard() {
+        const boardElement = document.getElementById('board');
+
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.setAttribute('data-index', i);
+            cell.addEventListener('click', () => cellClick(i));
+            boardElement.appendChild(cell);
+        }
+
+        document.getElementById('buttons').style.display = 'none';
+    }
+
+    function cellClick(index) {
+        if (board[index] === '' && !isGameOver()) {
+            board[index] = currentPlayer === 1 ? 'X' : 'O';
+            drawBoard();
+            if (checkWinner()) {
+                document.getElementById('result').innerHTML = alert(`${players[currentPlayer - 1]} venceu!`);
+                document.getElementById('buttons').style.display = 'block';
+            } else if (isBoardFull()) {
+                document.getElementById('result').innerHTML = alert('Empate!');
+                document.getElementById('buttons').style.display = 'block';
+            } else {
+                currentPlayer = 3 - currentPlayer; // Alternar entre 1 e 2
+            }
+        }
+    }
+
+    function drawBoard() {
+        const cells = document.querySelectorAll('.cell');
+        cells.forEach((cell, index) => {
+            cell.textContent = board[index];
+        });
+    }
+
+    function isGameOver() {
+        return document.getElementById('result').innerHTML !== '';
+    }
+
+    function isBoardFull() {
+        return !board.includes('');
+    }
+
+    function checkWinner() {
+        const winPatterns = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        for (const pattern of winPatterns) {
+            const [a, b, c] = pattern;
+            if (board[a] !== '' && board[a] === board[b] && board[b] === board[c]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function returnToLogin() {
+        document.getElementById('players').style.display = 'flex';
+        document.getElementById('buttons').style.display = 'none';
+        document.getElementById('board').innerHTML = '';
+        document.getElementById('result').innerHTML = '';
+        currentPlayer = 1;
+        board = ['', '', '', '', '', '', '', '', ''];
+        players = ['', ''];
+        document.getElementById('player1').value = '';
+        document.getElementById('player2').value = '';
+    }
+
+    function restartGame() {
+        document.getElementById('board').innerHTML = '';
+        document.getElementById('result').innerHTML = '';
+        currentPlayer = 1;
+        board = ['', '', '', '', '', '', '', '', ''];
+        createBoard();
+    }
+
+    function checkEnter(event) {
+        if (event.key === 'Enter') {
+            startGame();
+        }
+    }
+</script>
+
+</body>
+</html>
